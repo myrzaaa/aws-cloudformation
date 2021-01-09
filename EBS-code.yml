@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: CFN 101 Workshop - Lab 03 Intrinsic Functions.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: 'Amazon EC2 Configuration'
+        Parameters:
+          - InstanceType
+
+    ParameterLabels:
+      InstanceType:
+        default: 'Type of EC2 Instance'
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+    Description: 'Enter t2.micro or t2.small. Default is t2.micro.'
+
+  AmiID:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Description: 'The ID of the AMI.'
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+  EnvironmentType:
+    Type: String
+    Default: Test
+    AllowedValues:
+      - Dev
+      - Test
+
+
+Resources:
+  WebServerInstance01:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiID
+      InstanceType: !Ref InstanceType
+      DisableApiTermination: 'False'
+      BlockDeviceMappings:
+      - DeviceName: '/dev/xvda'
+        Ebs:
+          VolumeSize: '50'
+          VolumeType: gp3
+      - DeviceName: '/dev/xvdb'
+        Ebs:
+          VolumeSize: '10'
+          VolumeType: gp3
+
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref InstanceType, webserver ] ]
+        - Key: InstanceType
+          Value: !Sub ${InstanceType}
+        - Key: Env
+          Value: !Ref EnvironmentType
+
+  WebServerInstance02:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiID
+      InstanceType: !Ref InstanceType
+      DisableApiTermination: 'False'
+      # BlockDeviceMappings:
+      # - DeviceName: /dev/sda1
+      #   Ebs:
+      #     VolumeSize: 50
+      #     VolumeType: gp3
+      # - DeviceName : /dev/sdb
+      #   Ebs:
+      #   VolumeSize: 10
+      #   VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref InstanceType, webserver ] ]
+        - Key: InstanceType
+          Value: !Sub ${InstanceType}
+        - Key: Env
+          Value: !Ref EnvironmentType
+
+  WebServerInstance03:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiID
+      InstanceType: !Ref InstanceType
+      DisableApiTermination: 'False'
+      # BlockDeviceMappings:
+      # - DeviceName: /dev/sda1
+      #   Ebs:
+      #     VolumeSize: 50
+      #     VolumeType: gp3
+      # - DeviceName : /dev/sdb
+      #   Ebs:
+      #   VolumeSize: 10
+      #   VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [ !Ref InstanceType, webserver ] ]
+        - Key: InstanceType
+          Value: !Sub ${InstanceType}
+        - Key: Env
+          Value: !Ref EnvironmentType
